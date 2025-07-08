@@ -26,26 +26,23 @@ export const cancelTx = async (
   paymentPublicKey: string
 ): Promise<CancelTxResult> => {
   try {
-    // 1. Get the original transaction
     const originalTx = await mempoolClient.getTransaction(transactionId);
     
     if (originalTx.status.confirmed) {
       throw new Error("Cannot cancel confirmed transaction");
     }
 
-    // 2. Find which UTXOs from the original transaction belong to the user
     const userUtxosInOriginalTx = findUserUtxosInTransaction(originalTx, userPaymentAddress);
     
     if (userUtxosInOriginalTx.length === 0) {
       throw new Error("No UTXOs belonging to user found in transaction");
     }
 
-    // 3. Calculate higher fee rate (original fee + buffer)
+    // Calculate higher fee rate (original fee + buffer)
     const originalVsize = Math.ceil(originalTx.weight / 4);
     const originalFeeRate = Math.ceil(originalTx.fee / originalVsize);
     const newFeeRate = Math.max(originalFeeRate + 10, await mempoolClient.getFastestFee() + 5);
     
-    // 4. Create replacement transaction with higher fees
     const replacementTx = await createReplacementTransaction(
       userUtxosInOriginalTx,
       userPaymentAddress,
@@ -53,7 +50,6 @@ export const cancelTx = async (
       paymentPublicKey
     );
 
-    // 5. Return unsigned PSBT for wallet signing
     return {
       success: true,
       message: "Replacement transaction prepared for signing",
