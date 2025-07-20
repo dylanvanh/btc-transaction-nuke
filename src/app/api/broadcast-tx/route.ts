@@ -25,7 +25,6 @@ export async function POST(request: NextRequest) {
       message: "Transaction broadcast successfully",
     });
   } catch (error) {
-    console.error("Broadcast transaction API error:", error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
