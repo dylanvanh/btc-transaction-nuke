@@ -12,29 +12,35 @@ export default function Home() {
   const [transactionId, setTransactionId] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [replacementTxId, setReplacementTxId] = useState("");
   const [showWarningModal, setShowWarningModal] = useState(false);
 
-  const { connect, disconnect, connected, address, paymentAddress, signPsbt,  paymentPublicKey } =
-    useLaserEyes();
+  const {
+    connect,
+    disconnect,
+    connected,
+    address: ordinalsAddress,
+    paymentAddress,
+    signPsbt,
+    paymentPublicKey,
+    publicKey: ordinalsPublicKey,
+  } = useLaserEyes();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!transactionId || !connected || !paymentAddress || !address) {
-      setErrorMessage("Please connect wallet and enter transaction ID");
+    if (!transactionId || !connected || !paymentAddress || !ordinalsAddress) {
+      setError("Please connect wallet and enter transaction ID");
       setStatus("error");
       return;
     }
 
     setIsProcessing(true);
     setStatus("idle");
-    setErrorMessage("");
+    setError(null);
     setReplacementTxId("");
 
     try {
-      console.log("Cancelling transaction:", transactionId);
-
       const response = await fetch("/api/cancel-tx", {
         method: "POST",
         headers: {
@@ -42,51 +48,71 @@ export default function Home() {
         },
         body: JSON.stringify({
           transactionId,
-          userPaymentAddress: paymentAddress,
-          paymentPublicKey: paymentPublicKey
+          userWalletInfo: {
+            paymentAddress: paymentAddress,
+            paymentPublicKey: paymentPublicKey,
+            ordinalsAddress: ordinalsAddress,
+            ordinalsPublicKey: ordinalsPublicKey,
+          },
         }),
       });
 
       const result = await response.json();
 
       if (response.ok && result.success) {
-        console.log("PSBT prepared, signing with wallet...");
-        
-        // Sign the PSBT 
-        const signedPsbt = await signPsbt(result.unsignedPsbt);
-        console.log("PSBT signed, broadcasting transaction...");
-        
+        // Sign the PSBT with proper address mapping
+        const inputsToSign =
+          (
+            result as {
+              inputSigningMap?: Array<{ index: number; address: string }>;
+            }
+          ).inputSigningMap || [];
+
+        let signedPsbt;
+        try {
+          signedPsbt = await signPsbt({
+            tx: result.unsignedPsbt,
+            inputsToSign: inputsToSign,
+            finalize: false,
+            broadcast: false,
+          });
+        } catch (signError) {
+          throw new Error(
+            `Failed to sign PSBT: ${signError instanceof Error ? signError.message : "Unknown error"}`,
+          );
+        }
+
         if (!signedPsbt || !signedPsbt.signedPsbtHex) {
           throw new Error("Failed to sign PSBT");
         }
-        
-        // Broadcast the signed transaction 
+
+        // Broadcast the signed transaction
         const broadcastResponse = await fetch("/api/broadcast-tx", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            signedPsbtHex: signedPsbt.signedPsbtHex
+            signedPsbtHex: signedPsbt.signedPsbtHex,
           }),
         });
-        
+
         const broadcastResult = await broadcastResponse.json();
-        
+
         if (!broadcastResponse.ok || !broadcastResult.success) {
-          throw new Error(broadcastResult.error || "Failed to broadcast transaction");
+          throw new Error(
+            broadcastResult.error || "Failed to broadcast transaction",
+          );
         }
-        
+
         setStatus("success");
         setReplacementTxId(broadcastResult.txId);
-        console.log("Transaction cancellation successful:", { txId: broadcastResult.txId, result });
       } else {
-        setErrorMessage(result.error || result.message || "Failed to cancel transaction");
+        setError(result.error || "Failed to cancel transaction");
         setStatus("error");
       }
     } catch (error) {
-      console.error("Failed to cancel transaction:", error);
-      setErrorMessage(
+      setError(
         error instanceof Error ? error.message : "Failed to cancel transaction",
       );
       setStatus("error");
@@ -98,9 +124,9 @@ export default function Home() {
   const handleConnect = async () => {
     try {
       await connect(XVERSE);
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
-      setErrorMessage("Failed to connect wallet");
+    } catch (error: unknown) {
+      console.error(error);
+      setError("Failed to connect wallet");
       setStatus("error");
     }
   };
@@ -189,14 +215,14 @@ export default function Home() {
                     </div>
                   )}
 
-                  {/* Ordinals Address (using main address) */}
-                  {address && (
+                  {ordinalsAddress && (
                     <div className="mb-3">
                       <p className="text-slate-300 text-xs font-medium mb-1">
                         Ordinals Address:
                       </p>
                       <p className="text-slate-200 text-sm font-mono bg-slate-800/50 px-2 py-1 rounded">
-                        {address.slice(0, 12)}...{address.slice(-8)}
+                        {ordinalsAddress.slice(0, 12)}...
+                        {ordinalsAddress.slice(-8)}
                       </p>
                     </div>
                   )}
@@ -320,9 +346,26 @@ export default function Home() {
               </div>
             )}
 
-            {status === "error" && errorMessage && (
-              <div className="mt-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
-                <p className="text-red-400 font-medium">✗ {errorMessage}</p>
+            {status === "error" && error && (
+              <div className="mt-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl">❌</div>
+                  <div className="flex-1">
+                    <h3 className="text-red-400 font-medium text-sm mb-1">
+                      Transaction Error
+                    </h3>
+                    <p className="text-slate-300 text-sm mb-3">{error}</p>
+                    <button
+                      onClick={() => {
+                        setStatus("idle");
+                        setError(null);
+                      }}
+                      className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs rounded-lg transition-colors"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -344,38 +387,38 @@ export default function Home() {
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
           <Dialog.Popup className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 max-w-sm w-full mx-4 shadow-2xl">
-            <div className="text-center">
-              <div className="mx-auto w-12 h-12 bg-yellow-400/10 rounded-full flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-yellow-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                  />
-                </svg>
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 max-w-sm w-full mx-4 shadow-2xl">
+              <div className="text-center">
+                <div className="mx-auto w-12 h-12 bg-yellow-400/10 rounded-full flex items-center justify-center mb-4">
+                  <svg
+                    className="w-6 h-6 text-yellow-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                </div>
+
+                <Dialog.Title className="text-lg font-semibold text-white mb-3">
+                  Safety Warning
+                </Dialog.Title>
+
+                <Dialog.Description className="text-slate-300 text-sm mb-6">
+                  Always validate all transaction details before signing.
+                </Dialog.Description>
+
+                <Dialog.Close className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
+                  Got it
+                </Dialog.Close>
               </div>
-              
-              <Dialog.Title className="text-lg font-semibold text-white mb-3">
-                Safety Warning
-              </Dialog.Title>
-              
-              <Dialog.Description className="text-slate-300 text-sm mb-6">
-                Always validate all transaction details before signing.
-              </Dialog.Description>
-              
-              <Dialog.Close className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
-                Got it
-              </Dialog.Close>
             </div>
-          </div>
-        </Dialog.Popup>
+          </Dialog.Popup>
         </Dialog.Portal>
       </Dialog.Root>
     </div>
