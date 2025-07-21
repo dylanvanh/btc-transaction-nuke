@@ -25,5 +25,7 @@ export const executeStrategies = async <T>(
     }
   }
 
-  throw new ValidationError("All strategies failed :(");
+  throw new ValidationError(
+    `All transaction cancellation strategies failed. Errors: ${errors.map(err => err.message).join("; ")}`
+  );
 };

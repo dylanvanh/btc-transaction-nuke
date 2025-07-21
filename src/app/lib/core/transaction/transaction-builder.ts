@@ -7,6 +7,7 @@ import {
   ESTIMATED_OUTPUT_SIZE,
   TRANSACTION_OVERHEAD,
   DUST_THRESHOLD,
+  FEE_BUFFER,
 } from "../config/constants";
 
 const addUtxoInput = async (
@@ -57,7 +58,9 @@ const addUtxoInput = async (
 
       inputData.tapInternalKey = Buffer.from(xOnlyPubkey);
     } catch (error) {
-      throw error;
+      throw new Error(
+        `Error processing taproot key for address ${address} with public key ${publicKey}: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     }
   }
 
@@ -87,7 +90,7 @@ export const buildConsolidatedTransaction = async (
     TRANSACTION_OVERHEAD;
   const estimatedFee = Math.ceil(estimatedSize * feeRate);
 
-  const outputValue = totalInputValue - 2000;
+  const outputValue = totalInputValue - FEE_BUFFER;
 
   if (outputValue <= DUST_THRESHOLD) {
     throw new InsufficientFundsError("Insufficient funds to pay fees");
@@ -134,7 +137,7 @@ export const buildOrdinalsTransactionWithSeparateOutputs = async (
   });
 
   // Output 2: Send payment UTXO back to payment address (minus fees)
-  const paymentOutputValue = paymentUtxo.value - estimatedFee + 2000;
+  const paymentOutputValue = paymentUtxo.value - estimatedFee + FEE_BUFFER;
 
   if (paymentOutputValue <= DUST_THRESHOLD) {
     throw new InsufficientFundsError("Payment UTXO too small to cover fees");
