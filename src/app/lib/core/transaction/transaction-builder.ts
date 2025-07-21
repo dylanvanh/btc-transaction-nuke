@@ -1,13 +1,13 @@
-import { UTXO } from "../clients/mempool-client";
-import { bitcoin } from "./config";
+import { UTXO } from "../../clients/mempool-client";
+import { bitcoin } from "../config/config";
 import * as secp256k1 from "@bitcoinerlab/secp256k1";
-import { InsufficientFundsError } from "./errors";
+import { InsufficientFundsError } from "../errors/errors";
 import {
   ESTIMATED_INPUT_SIZE,
   ESTIMATED_OUTPUT_SIZE,
   TRANSACTION_OVERHEAD,
   DUST_THRESHOLD,
-} from "./constants";
+} from "../config/constants";
 
 const addUtxoInput = async (
   psbt: bitcoin.Psbt,
@@ -24,12 +24,6 @@ const addUtxoInput = async (
     };
     redeemScript?: Buffer;
     tapInternalKey?: Buffer;
-    tapBip32Derivation?: Array<{
-      pubkey: Buffer;
-      masterFingerprint: Buffer;
-      path: string;
-      leafHashes: Buffer[];
-    }>;
   } = {
     hash: utxo.txid,
     index: utxo.vout,
@@ -44,14 +38,10 @@ const addUtxoInput = async (
     const publicKeyBuffer = Buffer.from(publicKey, "hex");
     const p2wpkh = bitcoin.payments.p2wpkh({ pubkey: publicKeyBuffer });
     inputData.redeemScript = Buffer.from(p2wpkh.output!);
-  }
-  // Add tapInternalKey for Taproot addresses (bc1p)
-  else if (address.startsWith("bc1p")) {
-    
+  } else if (address.startsWith("bc1p")) {
     try {
       const publicKeyBuffer = Buffer.from(publicKey, "hex");
-      
-      // Handle different public key formats
+
       let xOnlyPubkey;
       if (publicKeyBuffer.length === 32) {
         // Already x-only format (32 bytes)
@@ -60,9 +50,11 @@ const addUtxoInput = async (
         // Compressed format (33 bytes) - convert to x-only
         xOnlyPubkey = secp256k1.xOnlyPointFromPoint(publicKeyBuffer);
       } else {
-        throw new Error(`Invalid public key length: ${publicKeyBuffer.length}. Expected 32 or 33 bytes.`);
+        throw new Error(
+          `Invalid public key length: ${publicKeyBuffer.length}. Expected 32 or 33 bytes.`,
+        );
       }
-      
+
       inputData.tapInternalKey = Buffer.from(xOnlyPubkey);
     } catch (error) {
       throw error;

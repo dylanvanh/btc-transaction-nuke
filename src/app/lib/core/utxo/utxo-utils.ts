@@ -1,10 +1,10 @@
-import { UTXO, Transaction } from "../clients/mempool-client";
-import { ordiscanClient } from "../clients/ordiscan-client";
+import { UTXO, Transaction } from "../../clients/mempool-client";
+import { ordiscanClient } from "../../clients/ordiscan-client";
 import {
   ValidationError,
   CollateralError,
   TransactionCancellationError,
-} from "./errors";
+} from "../errors/errors";
 
 export const createOutpointSet = (utxos: UTXO[]): Set<string> => {
   return new Set(utxos.map((utxo) => `${utxo.txid}:${utxo.vout}`));
@@ -165,6 +165,8 @@ export const filterCleanUtxos = async (
 
     return cleanUtxos;
   } catch (error) {
-    throw new Error(`Failed to validate UTXOs with ordiscan: ${error instanceof Error ? error.message : "Unknown error"}`);
+    throw new Error(
+      `Failed to validate UTXOs with ordiscan: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
   }
 };

@@ -1,4 +1,4 @@
-import { ValidationError, InsufficientFundsError } from "./errors";
+import { ValidationError, InsufficientFundsError } from "../errors/errors";
 
 export type CancellationStrategy<T> = () => Promise<T>;
 

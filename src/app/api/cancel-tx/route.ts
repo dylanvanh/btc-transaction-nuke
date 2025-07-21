@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cancelTx } from "@/app/lib/core/cancel-tx";
+import { cancelTx } from "@/app/lib/core/transaction/cancel-tx";
 import { z } from "zod";
-import { TransactionCancellationError } from "@/app/lib/core/errors";
+import { TransactionCancellationError } from "@/app/lib/core/errors/errors";
 
 const CancelTxSchema = z.object({
   transactionId: z.string().min(1),
@@ -32,14 +32,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: result.message,
-      replacementTxId: result.replacementTxId,
-      feeRate: result.feeRate,
-      totalFee: result.totalFee,
-      userUtxosUsed: result.userUtxosUsed,
       unsignedPsbt: result.unsignedPsbt,
-      scenario: result.scenario,
       inputSigningMap: result.inputSigningMap,
+      totalFee: result.totalFee,
     });
   } catch (error) {
 

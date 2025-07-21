@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { mempoolClient } from "@/app/lib/clients/mempool-client";
-import { bitcoin } from "@/app/lib/core/config";
+import { bitcoin } from "@/app/lib/core/config/config";
 
 const BroadcastTxSchema = z.object({
   signedPsbtHex: z.string().min(1, "Signed PSBT hex is required"),
