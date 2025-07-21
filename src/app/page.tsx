@@ -6,7 +6,7 @@ import { Field } from "@base-ui-components/react/field";
 import { Form } from "@base-ui-components/react/form";
 import { Dialog } from "@base-ui-components/react/dialog";
 import { useLaserEyes } from "@omnisat/lasereyes-react";
-import { XVERSE } from "@omnisat/lasereyes-core";
+import WalletSelector from "./components/WalletSelector";
 
 export default function Home() {
   const [transactionId, setTransactionId] = useState("");
@@ -17,8 +17,6 @@ export default function Home() {
   const [showWarningModal, setShowWarningModal] = useState(false);
 
   const {
-    connect,
-    disconnect,
     connected,
     address: ordinalsAddress,
     paymentAddress,
@@ -121,14 +119,14 @@ export default function Home() {
     }
   };
 
-  const handleConnect = async () => {
-    try {
-      await connect(XVERSE);
-    } catch (error: unknown) {
-      console.error(error);
-      setError("Failed to connect wallet");
-      setStatus("error");
-    }
+  const handleWalletConnected = () => {
+    setStatus("idle");
+    setError(null);
+  };
+
+  const handleWalletError = (errorMessage: string) => {
+    setError(errorMessage);
+    setStatus("error");
   };
 
   return (
@@ -187,56 +185,12 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Wallet Connection Status */}
+            {/* Wallet Connection */}
             <div className="mb-6">
-              {!connected ? (
-                <button
-                  onClick={handleConnect}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105"
-                >
-                  Connect Wallet
-                </button>
-              ) : (
-                <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-                  <p className="text-green-400 font-medium text-center mb-3">
-                    ✓ Xverse Wallet Connected
-                  </p>
-
-                  {/* Payment Address */}
-                  {paymentAddress && (
-                    <div className="mb-3">
-                      <p className="text-slate-300 text-xs font-medium mb-1">
-                        Payment Address:
-                      </p>
-                      <p className="text-slate-200 text-sm font-mono bg-slate-800/50 px-2 py-1 rounded">
-                        {paymentAddress.slice(0, 12)}...
-                        {paymentAddress.slice(-8)}
-                      </p>
-                    </div>
-                  )}
-
-                  {ordinalsAddress && (
-                    <div className="mb-3">
-                      <p className="text-slate-300 text-xs font-medium mb-1">
-                        Ordinals Address:
-                      </p>
-                      <p className="text-slate-200 text-sm font-mono bg-slate-800/50 px-2 py-1 rounded">
-                        {ordinalsAddress.slice(0, 12)}...
-                        {ordinalsAddress.slice(-8)}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="text-center">
-                    <button
-                      onClick={disconnect}
-                      className="text-slate-400 hover:text-white text-sm underline"
-                    >
-                      Disconnect
-                    </button>
-                  </div>
-                </div>
-              )}
+              <WalletSelector 
+                onWalletConnected={handleWalletConnected}
+                onError={handleWalletError}
+              />
             </div>
 
             <Form onSubmit={handleSubmit}>
