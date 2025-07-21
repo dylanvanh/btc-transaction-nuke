@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { mempoolClient } from "@/app/lib/clients/mempool-client";
-import { bitcoin } from "@/app/lib/core/config";
+import { bitcoin } from "@/app/lib/core/config/config";
 
 const BroadcastTxSchema = z.object({
   signedPsbtHex: z.string().min(1, "Signed PSBT hex is required"),
@@ -25,7 +25,6 @@ export async function POST(request: NextRequest) {
       message: "Transaction broadcast successfully",
     });
   } catch (error) {
-    console.error("Broadcast transaction API error:", error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

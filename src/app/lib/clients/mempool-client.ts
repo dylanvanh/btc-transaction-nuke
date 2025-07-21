@@ -96,6 +96,11 @@ export class MempoolClient extends ApiClient {
       .then((response) => response.data);
   }
 
+  async getAddressUtxos(address: string): Promise<UTXO[]> {
+    return this.api
+      .get(`/address/${address}/utxo`)
+      .then((response) => response.data);
+  }
 }
 
 export const mempoolClient = new MempoolClient();
