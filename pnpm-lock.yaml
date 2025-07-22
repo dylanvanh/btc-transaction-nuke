@@ -35,6 +35,9 @@ importers:
       ecpair:
         specifier: ^3.0.0
         version: 3.0.0(typescript@5.8.3)
+      lucide-react:
+        specifier: ^0.525.0
+        version: 0.525.0(react@19.1.0)
       next:
         specifier: 15.3.5
         version: 15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -44,6 +47,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
+      simple-icons:
+        specifier: ^15.7.0
+        version: 15.7.0
       zod:
         specifier: ^3.25.75
         version: 3.25.75
@@ -1315,8 +1321,8 @@ packages:
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
 
-  alkanes@https://codeload.github.com/kungfuflex/alkanes/tar.gz/857f0bfddd6dd0bfa3c71178f8442598b102dfbb:
-    resolution: {tarball: https://codeload.github.com/kungfuflex/alkanes/tar.gz/857f0bfddd6dd0bfa3c71178f8442598b102dfbb}
+  alkanes@https://codeload.github.com/kungfuflex/alkanes/tar.gz/92f419c587efc42156cd5cc3020dc961f4dd1250:
+    resolution: {tarball: https://codeload.github.com/kungfuflex/alkanes/tar.gz/92f419c587efc42156cd5cc3020dc961f4dd1250}
     version: 0.1.0
     hasBin: true
 
@@ -2598,6 +2604,11 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
+  lucide-react@0.525.0:
+    resolution: {integrity: sha512-Tm1txJ2OkymCGkvwoHt33Y2JpN5xucVq1slHcgE6Lk0WjDfjgKWor5CdVER8U6DvcfMwh4M8XxmpTiyzfmfDYQ==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   magic-string@0.19.1:
     resolution: {integrity: sha512-AJRZGyg/F3QJUsgz/0Kh7HR09VZ1Mu/Nfyou9WtlXAYyMErN4BvtAOqwsYpHwT+UWbP2QlGPPmHTCvZjk0zcAw==}
 
@@ -3169,6 +3180,10 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  simple-icons@15.7.0:
+    resolution: {integrity: sha512-buN9moq1lh6Tujgr2Nc3Vgi4naE0IOKon48G42aLWqSNxjWJlUx+YSqobKcefom4uv1xyAVFcjQOJIhBJvXjGw==}
+    engines: {node: '>=0.12.18'}
 
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
@@ -4143,7 +4158,7 @@ snapshots:
       '@nanostores/persistent': 0.10.2(nanostores@0.11.4)
       '@orangecrypto/orange-connect': 1.2.4(typescript@5.8.3)
       '@oyl/sdk': 1.17.0(@types/node@20.19.4)(typescript@5.8.3)
-      alkanes: https://codeload.github.com/kungfuflex/alkanes/tar.gz/857f0bfddd6dd0bfa3c71178f8442598b102dfbb(typescript@5.8.3)
+      alkanes: https://codeload.github.com/kungfuflex/alkanes/tar.gz/92f419c587efc42156cd5cc3020dc961f4dd1250(typescript@5.8.3)
       axios: 1.10.0
       bip32: 5.0.0-rc.0(typescript@5.8.3)
       bip39: 3.1.0
@@ -4222,7 +4237,7 @@ snapshots:
       '@magiceden-oss/runestone-lib': 1.0.2
       '@sadoprotocol/ordit-sdk': 3.0.0
       '@scure/btc-signer': 1.5.0
-      alkanes: https://codeload.github.com/kungfuflex/alkanes/tar.gz/857f0bfddd6dd0bfa3c71178f8442598b102dfbb(typescript@5.8.3)
+      alkanes: https://codeload.github.com/kungfuflex/alkanes/tar.gz/92f419c587efc42156cd5cc3020dc961f4dd1250(typescript@5.8.3)
       bignumber.js: 9.1.2
       bip32: 4.0.0
       bip322-js: 2.0.0
@@ -4686,7 +4701,7 @@ snapshots:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
 
-  alkanes@https://codeload.github.com/kungfuflex/alkanes/tar.gz/857f0bfddd6dd0bfa3c71178f8442598b102dfbb(typescript@5.8.3):
+  alkanes@https://codeload.github.com/kungfuflex/alkanes/tar.gz/92f419c587efc42156cd5cc3020dc961f4dd1250(typescript@5.8.3):
     dependencies:
       '@magiceden-oss/runestone-lib': 1.0.2
       '@protobuf-ts/protoc': 2.11.1
@@ -6390,6 +6405,10 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
+  lucide-react@0.525.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+
   magic-string@0.19.1:
     dependencies:
       vlq: 0.2.3
@@ -7075,6 +7094,8 @@ snapshots:
       side-channel-weakmap: 1.0.2
 
   signal-exit@4.1.0: {}
+
+  simple-icons@15.7.0: {}
 
   simple-swizzle@0.2.2:
     dependencies:
