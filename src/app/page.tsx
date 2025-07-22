@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Input } from "@base-ui-components/react/input";
-import { Field } from "@base-ui-components/react/field";
 import { Form } from "@base-ui-components/react/form";
 import { Dialog } from "@base-ui-components/react/dialog";
 import { useLaserEyes } from "@omnisat/lasereyes-react";
+import { AlertCircle, AlertTriangle, CheckCircle, Skull } from "lucide-react";
+import { siGithub } from "simple-icons";
+import { useState } from "react";
 import WalletSelector from "./components/WalletSelector";
 
 export default function Home() {
@@ -130,247 +130,204 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-6 shadow-2xl relative">
-            {/* Header Icons */}
-            <div className="absolute top-4 right-4 flex gap-2">
-              <button
-                onClick={() => setShowWarningModal(true)}
-                className="p-2 bg-slate-800/30 hover:bg-yellow-400/10 border border-slate-700/50 hover:border-yellow-400/30 text-slate-400 hover:text-yellow-400 rounded-lg transition-all duration-200"
-                title="Important safety info"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                  />
-                </svg>
-              </button>
-              <a
-                href="https://github.com/dylanvanh/btc-transaction-nuke"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 bg-slate-800/30 hover:bg-slate-700/50 border border-slate-700/50 hover:border-slate-600/50 text-slate-400 hover:text-slate-200 rounded-lg transition-all duration-200"
-                title="GitHub"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </a>
-            </div>
+    <div className="min-h-screen bg-black text-white font-mono relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 left-10 w-2 h-2 bg-white animate-pulse"></div>
+        <div className="absolute top-20 right-20 w-1 h-1 bg-white animate-ping"></div>
+        <div className="absolute bottom-20 left-20 w-1 h-1 bg-white animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-2 h-2 bg-white animate-ping"></div>
+      </div>
 
-            <div className="text-center mb-8 mt-12">
-              <h1 className="text-2xl font-bold text-white mb-2">
-                Bitcoin Transaction Nuke
-              </h1>
-              <p className="text-slate-400 text-sm">
-                Cancel unconfirmed transactions
-              </p>
+      {/* Main Content */}
+      <main className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-xl w-full">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-2">
+              <Skull className="w-6 h-6 text-red-400 animate-pulse" />
+              <h2 className="text-2xl font-bold tracking-wider text-red-400">
+                NUKE TRANSACTION
+              </h2>
+              <Skull className="w-6 h-6 text-red-400 animate-pulse" />
             </div>
+            <p className="text-gray-400 text-sm">
+              Enter TX hash to cancel pending transaction
+            </p>
+          </div>
 
-            {/* Wallet Connection */}
-            <div className="mb-6">
-              <WalletSelector 
-                onWalletConnected={handleWalletConnected}
-                onError={handleWalletError}
-              />
-            </div>
+          {/* Main Interface */}
+          <div className="bg-black border border-red-400 pixel-border p-6 mb-6 relative">
+            {/* Glitch effect overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-900 to-transparent opacity-10 animate-pulse"></div>
 
-            <Form onSubmit={handleSubmit}>
-              <Field.Root className="mb-6">
-                <Field.Label className="block text-sm font-medium text-slate-300 mb-3">
-                  Transaction ID
-                </Field.Label>
-                <div className="relative">
-                  <Input
+            <div className="space-y-4 relative z-10">
+              {/* Wallet Connection */}
+              <div className="mb-6">
+                <WalletSelector
+                  onWalletConnected={handleWalletConnected}
+                  onError={handleWalletError}
+                />
+              </div>
+
+              <Form onSubmit={handleSubmit}>
+                {/* Transaction Input */}
+                <div>
+                  <label className="block text-xs font-bold mb-2 tracking-wider text-red-400">
+                    TRANSACTION HASH
+                  </label>
+                  <input
                     type="text"
                     value={transactionId}
                     onChange={(e) => setTransactionId(e.target.value)}
-                    placeholder="Enter transaction ID..."
-                    disabled={!connected}
-                    className="w-full px-4 py-4 bg-slate-900/80 border border-slate-600/50 rounded-2xl text-white placeholder-slate-500 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 font-mono text-sm transition-all duration-200"
-                    required
+                    placeholder="1a1a1a1a..."
+                    className="w-full p-3 bg-black text-white border border-white pixel-input focus:outline-none focus:border-red-400 font-mono text-xs"
+                    disabled={!connected || isProcessing}
                   />
                 </div>
-              </Field.Root>
 
-              <button
-                type="submit"
-                disabled={!connected || isProcessing || !transactionId}
-                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-slate-700 disabled:to-slate-800 disabled:text-slate-500 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-              >
-                {isProcessing ? (
-                  <>
-                    <svg
-                      className="animate-spin h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                    Cancel Transaction
-                  </>
-                )}
-              </button>
-            </Form>
+                {/* Cancel Button */}
+                <button
+                  type="submit"
+                  disabled={!connected || !transactionId.trim() || isProcessing}
+                  className="w-full py-3 px-4 bg-red-600 text-white font-bold text-sm tracking-wider border border-red-600 pixel-button hover:bg-black hover:text-red-600 hover:border-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden mt-4"
+                >
+                  <span className="relative z-10">
+                    {isProcessing ? "NUKING..." : "💥 NUKE TX"}
+                  </span>
+                  {!isProcessing && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-500 opacity-0 hover:opacity-20 transition-opacity"></div>
+                  )}
+                </button>
 
-            {/* Status Messages */}
-            {status === "success" && (
-              <div className="mt-4 bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
-                <p className="text-green-400 font-medium">
-                  ✓ Cancellation transaction broadcast successfully!
-                </p>
-                {replacementTxId && (
-                  <div className="mt-3">
-                    <p className="text-slate-300 text-xs font-medium mb-2">
-                      Replacement Transaction:
-                    </p>
-                    <a
-                      href={`https://mempool.space/tx/${replacementTxId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors duration-200"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                      View on Mempool.space
-                    </a>
+                {/* Status */}
+                {!connected && (
+                  <div className="flex items-center justify-center space-x-1 text-yellow-400 text-xs mt-4">
+                    <AlertTriangle className="w-3 h-3" />
+                    <span>CONNECT WALLET FIRST</span>
                   </div>
                 )}
-                <p className="text-slate-300 text-sm mt-3">
-                  Monitor the mempool for confirmation
-                </p>
-              </div>
-            )}
-
-            {status === "error" && error && (
-              <div className="mt-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl">❌</div>
-                  <div className="flex-1">
-                    <h3 className="text-red-400 font-medium text-sm mb-1">
-                      Transaction Error
-                    </h3>
-                    <p className="text-slate-300 text-sm mb-3">{error}</p>
-                    <button
-                      onClick={() => {
-                        setStatus("idle");
-                        setError(null);
-                      }}
-                      className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs rounded-lg transition-colors"
-                    >
-                      Try Again
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="mt-6 p-4 bg-slate-900/60 rounded-2xl border border-slate-700/30">
-              <p className="text-slate-300 text-sm font-medium mb-1">
-                Important
-              </p>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Only works with unconfirmed transactions. Success depends on
-                network conditions and gas fees.
-              </p>
+              </Form>
             </div>
           </div>
+
+          {/* Status Messages */}
+          {status === "success" && (
+            <div className="bg-black border border-green-400 pixel-border p-4 mb-4">
+              <div className="flex items-center justify-center space-x-2 mb-3">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <p className="text-green-400 font-bold text-xs tracking-wider">
+                  NUKE SUCCESSFUL!
+                </p>
+              </div>
+              {replacementTxId && (
+                <div className="text-center">
+                  <p className="text-gray-400 text-xs mb-2">REPLACEMENT TX:</p>
+                  <div className="bg-gray-900 p-2 border border-gray-600 text-xs font-mono break-all mb-3">
+                    {replacementTxId}
+                  </div>
+                  <a
+                    href={`https://mempool.space/tx/${replacementTxId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 py-2 px-3 bg-white text-black font-bold text-xs border border-white pixel-button hover:bg-black hover:text-white transition-all"
+                  >
+                    <span>VIEW ON MEMPOOL</span>
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+
+          {status === "error" && error && (
+            <div className="bg-black border border-red-400 pixel-border p-4 mb-4">
+              <div className="flex items-center justify-center space-x-2 mb-3">
+                <AlertCircle className="w-4 h-4 text-red-400" />
+                <p className="text-red-400 font-bold text-xs tracking-wider">
+                  NUKE FAILED
+                </p>
+              </div>
+              <p className="text-gray-400 text-xs text-center mb-3">{error}</p>
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    setStatus("idle");
+                    setError(null);
+                  }}
+                  className="py-2 px-3 bg-white text-black font-bold text-xs border border-white pixel-button hover:bg-black hover:text-white transition-all"
+                >
+                  TRY AGAIN
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Compact Info */}
+          <div className="border border-gray-600 border-dotted p-3 text-center">
+            <p className="text-gray-500 text-xs">
+              Uses RBF to cancel unconfirmed transactions
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-4 flex justify-center space-x-3">
+            <a
+              href="https://github.com/dylanvanh/btc-transaction-nuke"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center space-x-2 text-white hover:text-red-400 transition-all tracking-wider text-xs border border-white hover:border-red-400 px-3 py-2 pixel-button bg-black hover:bg-black hover:text-red-400"
+            >
+              <svg
+                role="img"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-3 h-3 fill-current"
+              >
+                <path d={siGithub.path} />
+              </svg>
+              <span className="font-bold">GITHUB</span>
+            </a>
+            <button
+              onClick={() => setShowWarningModal(true)}
+              className="flex items-center justify-center space-x-2 text-white hover:text-red-400 transition-all tracking-wider text-xs border border-white hover:border-red-400 px-3 py-2 pixel-button bg-black hover:bg-black hover:text-red-400"
+            >
+              <AlertCircle className="w-3 h-3" />
+              <span className="font-bold">DISCLAIMER</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
 
       {/* Warning Modal */}
       <Dialog.Root open={showWarningModal} onOpenChange={setShowWarningModal}>
         <Dialog.Portal>
-          <Dialog.Backdrop className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
+          <Dialog.Backdrop className="fixed inset-0 bg-black bg-opacity-50 z-40" />
           <Dialog.Popup className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 max-w-sm w-full mx-4 shadow-2xl">
-              <div className="text-center">
-                <div className="mx-auto w-12 h-12 bg-yellow-400/10 rounded-full flex items-center justify-center mb-4">
-                  <svg
-                    className="w-6 h-6 text-yellow-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                    />
-                  </svg>
+            <div className="bg-black border border-yellow-400 pixel-border p-6 max-w-md w-full relative">
+              <div className="absolute inset-0 bg-yellow-900 opacity-5 animate-pulse"></div>
+              <div className="text-center mb-4 relative z-10">
+                <div className="flex items-center justify-center mb-3">
+                  <AlertCircle className="w-8 h-8 text-yellow-400 animate-pulse" />
                 </div>
-
-                <Dialog.Title className="text-lg font-semibold text-white mb-3">
-                  Safety Warning
+                <Dialog.Title className="text-lg font-bold mb-3 tracking-wider text-yellow-400">
+                  DISCLAIMER
                 </Dialog.Title>
-
-                <Dialog.Description className="text-slate-300 text-sm mb-6">
-                  Always validate all transaction details before signing.
-                </Dialog.Description>
-
-                <Dialog.Close className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
-                  Got it
-                </Dialog.Close>
+                <div className="text-left space-y-2 text-xs text-gray-300">
+                  <Dialog.Description className="font-bold text-white mb-2">
+                    Important Notice:
+                  </Dialog.Description>
+                  <div>• Always verify transaction details before signing.</div>
+                  <div>
+                    • The owner is not responsible for any incorrect
+                    transactions you sign.
+                  </div>
+                  <div>• Use this platform at your own risk.</div>
+                  <div>• By using this platform, you agree to these terms.</div>
+                </div>
               </div>
+
+              <Dialog.Close className="w-full py-2 bg-yellow-400 text-black font-bold text-xs border border-yellow-400 pixel-button hover:bg-black hover:text-yellow-400 hover:border-yellow-400 transition-all tracking-wider">
+                I UNDERSTAND
+              </Dialog.Close>
             </div>
           </Dialog.Popup>
         </Dialog.Portal>

@@ -7,6 +7,7 @@ import {
   useLaserEyes,
   WalletIcon,
 } from "@omnisat/lasereyes-react";
+import { CheckCircle, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface WalletSelectorProps {
@@ -124,32 +125,32 @@ export default function WalletSelector({
 
   if (connected) {
     return (
-      <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-        <p className="text-green-400 font-medium text-center mb-3">
-          ✓ Wallet Connected
-        </p>
+      <div className="border border-green-400 pixel-border p-3 mb-4">
+        <div className="flex items-center justify-center space-x-2 mb-3">
+          <CheckCircle className="w-3 h-3 text-green-400" />
+          <span className="text-xs text-green-400 tracking-wider font-bold">
+            WALLET CONNECTED
+          </span>
+        </div>
 
-        {/* Payment Address */}
         {paymentAddress && (
-          <div className="mb-3">
-            <p className="text-slate-300 text-xs font-medium mb-1">
-              Payment Address:
+          <div className="mb-2">
+            <p className="text-gray-400 text-xs mb-1 tracking-wider">
+              PAYMENT:
             </p>
-            <p className="text-slate-200 text-sm font-mono bg-slate-800/50 px-2 py-1 rounded">
-              {paymentAddress.slice(0, 12)}...
-              {paymentAddress.slice(-8)}
+            <p className="text-white text-xs font-mono bg-gray-900 px-2 py-1 border border-gray-600">
+              {`${paymentAddress.slice(0, 8)}...${paymentAddress.slice(-6)}`}
             </p>
           </div>
         )}
 
         {ordinalsAddress && (
           <div className="mb-3">
-            <p className="text-slate-300 text-xs font-medium mb-1">
-              Ordinals Address:
+            <p className="text-gray-400 text-xs mb-1 tracking-wider">
+              ORDINALS:
             </p>
-            <p className="text-slate-200 text-sm font-mono bg-slate-800/50 px-2 py-1 rounded">
-              {ordinalsAddress.slice(0, 12)}...
-              {ordinalsAddress.slice(-8)}
+            <p className="text-white text-xs font-mono bg-gray-900 px-2 py-1 border border-gray-600">
+              {`${ordinalsAddress.slice(0, 8)}...${ordinalsAddress.slice(-6)}`}
             </p>
           </div>
         )}
@@ -157,9 +158,9 @@ export default function WalletSelector({
         <div className="text-center">
           <button
             onClick={handleDisconnect}
-            className="text-slate-400 hover:text-white text-sm underline transition-colors"
+            className="text-gray-400 hover:text-red-400 text-xs underline tracking-wider"
           >
-            Disconnect
+            DISCONNECT
           </button>
         </div>
       </div>
@@ -170,27 +171,30 @@ export default function WalletSelector({
     <>
       <button
         onClick={() => setShowWalletModal(true)}
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105"
+        disabled={isConnecting}
+        className="w-full flex items-center justify-center space-x-2 py-2 bg-white text-black text-xs font-bold border border-white pixel-button hover:bg-black hover:text-white transition-all disabled:opacity-50 mb-4"
       >
-        Connect Wallet
+        <Wallet className="w-3 h-3" />
+        <span>{isConnecting ? "CONNECTING..." : "CONNECT WALLET"}</span>
       </button>
 
       {/* Wallet Selection Modal */}
       <Dialog.Root open={showWalletModal} onOpenChange={setShowWalletModal}>
         <Dialog.Portal>
-          <Dialog.Backdrop className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
-          <Dialog.Popup className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 max-w-md w-full mx-4 shadow-2xl">
-              <div className="flex items-center justify-between mb-6">
-                <Dialog.Title className="text-xl font-semibold text-white">
-                  Connect Wallet
+          <Dialog.Backdrop className="fixed inset-0 bg-black bg-opacity-50 z-40" />
+          <Dialog.Popup className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden">
+            <div className="bg-black border border-white pixel-border p-6 w-full max-w-md mx-auto relative overflow-hidden">
+              <div className="absolute inset-0 bg-gray-900 opacity-5 animate-pulse"></div>
+              <div className="flex items-center justify-between mb-6 relative z-10">
+                <Dialog.Title className="text-lg font-bold tracking-wider text-white truncate">
+                  SELECT WALLET
                 </Dialog.Title>
-                <Dialog.Close className="text-slate-400 hover:text-white text-xl">
+                <Dialog.Close className="text-gray-400 hover:text-white text-xl flex-shrink-0 ml-4">
                   ✕
                 </Dialog.Close>
               </div>
 
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-3 max-h-96 overflow-y-auto overflow-x-hidden relative z-10">
                 {Object.values(SUPPORTED_WALLETS)
                   .sort((a, b) => {
                     // Sort installed wallets first
@@ -207,7 +211,7 @@ export default function WalletSelector({
                     const isInstalled = walletStatusMap[wallet.name];
 
                     return (
-                      <div key={wallet.name} className="relative">
+                      <div key={wallet.name} className="w-full overflow-hidden">
                         <button
                           onClick={
                             isInstalled
@@ -215,87 +219,70 @@ export default function WalletSelector({
                               : undefined
                           }
                           disabled={isConnecting || !isInstalled}
-                          className={`flex items-center gap-4 w-full p-4 border rounded-xl transition-all duration-200 group ${
+                          className={`flex items-center justify-between w-full p-3 border transition-all duration-200 group min-w-0 ${
                             isInstalled
-                              ? "bg-slate-900/50 hover:bg-slate-700/50 border-slate-700/50 hover:border-slate-600/50 cursor-pointer"
-                              : "bg-slate-900/20 border-slate-800/50 cursor-not-allowed opacity-60"
+                              ? "bg-black hover:bg-gray-900 border-white hover:border-gray-300 cursor-pointer pixel-button"
+                              : "bg-black border-gray-600 cursor-not-allowed"
                           }`}
                         >
-                          <div className="w-10 h-10 flex items-center justify-center">
-                            <WalletIcon
-                              walletName={wallet.name}
-                              size={32}
-                              className={`transition-transform ${
-                                isInstalled ? "group-hover:scale-110" : ""
-                              }`}
-                            />
-                          </div>
-                          <div className="flex-1 text-left">
-                            <div className="flex items-center gap-2">
-                              <p className="text-white font-medium text-sm">
-                                {formatWalletName(wallet.name)}
-                              </p>
-                              {isInstalled ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
-                                  ✓ Installed
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-500/10 text-slate-400 border border-slate-500/20">
-                                  Not installed
-                                </span>
-                              )}
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                              <WalletIcon walletName={wallet.name} size={24} />
                             </div>
-                            <p className="text-slate-400 text-xs">
-                              Bitcoin wallet
+                            <p className="text-white font-bold text-xs tracking-wider truncate">
+                              {formatWalletName(wallet.name).toUpperCase()}
                             </p>
                           </div>
-                          {isConnecting && isInstalled && (
-                            <div className="text-orange-500">
-                              <svg
-                                className="animate-spin h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                />
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                />
-                              </svg>
-                            </div>
-                          )}
-                        </button>
 
-                        {!isInstalled && (
-                          <div className="absolute top-0 right-0 h-full flex items-center pr-4">
-                            <a
-                              href={wallet.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded-lg transition-colors"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              Install
-                            </a>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            {isConnecting && isInstalled && (
+                              <div className="text-red-400">
+                                <svg
+                                  className="animate-spin h-4 w-4"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  />
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                  />
+                                </svg>
+                              </div>
+                            )}
+                            {isInstalled ? (
+                              <span className="inline-flex items-center px-2 py-0.5 border border-green-400 text-xs font-bold bg-black text-green-400 whitespace-nowrap">
+                                ✓ READY
+                              </span>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <span className="inline-flex items-center px-2 py-0.5 border border-gray-600 text-xs font-bold bg-black text-gray-400 whitespace-nowrap">
+                                  NOT FOUND
+                                </span>
+                                <a
+                                  href={wallet.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold border border-red-600 pixel-button whitespace-nowrap"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  GET
+                                </a>
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </button>
                       </div>
                     );
                   })}
-              </div>
-
-              <div className="mt-6 p-4 bg-slate-900/60 rounded-xl border border-slate-700/30">
-                <p className="text-slate-400 text-xs text-center">
-                  Make sure your wallet extension is installed and unlocked
-                </p>
               </div>
             </div>
           </Dialog.Popup>
