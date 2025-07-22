@@ -6,23 +6,27 @@ A Bitcoin transaction cancellation tool that helps users cancel pending transact
 
 - Cancel pending Bitcoin transactions
 - Replace-By-Fee (RBF) transaction creation
-- Support for P2SH-wrapped SegWit and native SegWit addresses
+- Support for P2SH-wrapped SegWit (3...) and native SegWit (bc1q...) && Taproot (bc1p...) addresses
 - PSBT generation for wallet signing
 - Mempool API integration
+- Ordiscan API integration
 
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 2. Set environment variables:
+
 ```bash
 cp .env.example .env.local
 ```
 
 3. Start the development server:
+
 ```bash
 pnpm dev
 ```
@@ -30,7 +34,7 @@ pnpm dev
 ## Environment Variables
 
 ```
-MEMPOOL_URL=https://mempool.space
+.env.example
 ```
 
 ## API Endpoints
