@@ -102,6 +102,7 @@ packages:
   '@base-ui-components/react@1.0.0-beta.1':
     resolution: {integrity: sha512-7zmGiz4/+HKnv99lWftItoSMqnj2PdSvt2krh0/GP+Rj0xK0NMnFI/gIVvP7CB2G+k0JPUrRWXjXa3y08oiakg==}
     engines: {node: '>=14.0.0'}
+    deprecated: Package was renamed to @base-ui/react
     peerDependencies:
       '@types/react': ^17 || ^18 || ^19
       react: ^17 || ^18 || ^19
