@@ -1,0 +1,13 @@
+overrides:
+  '@typescript-eslint/typescript-estree>semver': 7.8.1
+  alkanes: 0.1.0
+  'is-bun-module>semver': 7.8.1
+  'sharp>semver': 7.8.1
+
+allowBuilds:
+  '@tailwindcss/oxide': true
+  cbor-extract: true
+  esbuild: true
+  secp256k1: true
+  sharp: true
+  unrs-resolver: true
