@@ -13,32 +13,23 @@ import { InsufficientFundsError, ValidationError } from "../../errors/errors";
 import {
   createOutpointSet,
   excludeUtxosByOutpoints,
-  filterUtxosByOutpoints,
   findUserUtxosInTransaction,
   validatePaymentUtxosAreClean,
 } from "../../utxo/utxo-utils";
 import { executeStrategies } from "../strategy";
 import { buildConsolidatedTransaction } from "../transaction-builder";
-
-export type CancelTxResult = {
-  unsignedPsbt: string;
-  inputSigningMap: Array<{ index: number; address: string }>;
-  totalFee: number;
-};
+import type { CancelTxResult } from "../cancel-tx";
 
 export const processPaymentUtxos = async (
-  allUserUtxos: UTXO[],
   originalTx: Transaction,
   paymentAddress: string,
   feeRate: number,
   paymentPublicKey: string,
 ): Promise<CancelTxResult> => {
-  const userPaymentUtxosInTx = findUserUtxosInTransaction(
+  const paymentUtxos = findUserUtxosInTransaction(
     originalTx,
     paymentAddress,
   );
-  const paymentOutpoints = createOutpointSet(userPaymentUtxosInTx);
-  const paymentUtxos = filterUtxosByOutpoints(allUserUtxos, paymentOutpoints);
 
   if (paymentUtxos.length === 0) {
     throw new ValidationError("No payment UTXOs found in transaction");
@@ -54,7 +45,7 @@ export const processPaymentUtxos = async (
     );
 
   const replaceUsingExistingPlusAdditionalPaymentUtxos = () =>
-    createReplacementWithAdditionalPaymentUtxos(
+    supplementWithAdditionalPaymentUtxos(
       paymentUtxos,
       paymentAddress,
       feeRate,
@@ -106,20 +97,6 @@ const createReplacementWithExistingPaymentUtxos = async (
     inputSigningMap,
     totalFee: replacementTx.fee,
   };
-};
-
-const createReplacementWithAdditionalPaymentUtxos = async (
-  transactionUtxos: UTXO[],
-  paymentAddress: string,
-  feeRate: number,
-  paymentPublicKey: string,
-): Promise<CancelTxResult> => {
-  return await supplementWithAdditionalPaymentUtxos(
-    transactionUtxos,
-    paymentAddress,
-    feeRate,
-    paymentPublicKey,
-  );
 };
 
 const supplementWithAdditionalPaymentUtxos = async (
@@ -189,4 +166,3 @@ const supplementWithAdditionalPaymentUtxos = async (
     totalFee: replacementTx.fee,
   };
 };
-

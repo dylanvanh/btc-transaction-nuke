@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
 import { cancelTx } from "@/app/lib/core/transaction/cancel-tx";
 import { z } from "zod";
 import { TransactionCancellationError } from "@/app/lib/core/errors/errors";
@@ -13,14 +12,12 @@ const CancelTxSchema = z.object({
   }),
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = await request.json();
-
-    const parseResult = CancelTxSchema.safeParse(body);
+    const parseResult = CancelTxSchema.safeParse(await request.json());
 
     if (!parseResult.success) {
-      return NextResponse.json(
+      return Response.json(
         { error: "Invalid request data", details: parseResult.error.errors },
         { status: 400 },
       );
@@ -30,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     const result = await cancelTx(transactionId, userWalletInfo);
 
-    return NextResponse.json({
+    return Response.json({
       success: true,
       unsignedPsbt: result.unsignedPsbt,
       inputSigningMap: result.inputSigningMap,
@@ -39,7 +36,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
 
     if (error instanceof TransactionCancellationError) {
-      return NextResponse.json(
+      return Response.json(
         {
           error: error.message,
         },
@@ -47,7 +44,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(
+    return Response.json(
       {
         error: "Internal server error",
       },

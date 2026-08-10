@@ -31,12 +31,6 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-## Environment Variables
-
-```
-.env.example
-```
-
 ## API Endpoints
 
 - `POST /api/cancel-tx` - Cancel a pending transaction

@@ -7,21 +7,18 @@ export const executeStrategies = async <T>(
 ): Promise<T> => {
   const errors: Error[] = [];
 
-  for (let i = 0; i < strategies.length; i++) {
-    const strategy = strategies[i];
-
+  for (const strategy of strategies) {
     try {
-      const result = await strategy();
-      return result;
+      return await strategy();
     } catch (error) {
       if (
-        error instanceof ValidationError ||
-        error instanceof InsufficientFundsError
+        !(error instanceof ValidationError) &&
+        !(error instanceof InsufficientFundsError)
       ) {
-        errors.push(error);
-        continue; // Try next strategy
+        throw error;
       }
-      throw error;
+
+      errors.push(error);
     }
   }
 

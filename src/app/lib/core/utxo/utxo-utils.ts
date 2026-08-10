@@ -10,16 +10,6 @@ export const createOutpointSet = (utxos: UTXO[]): Set<string> => {
   return new Set(utxos.map((utxo) => `${utxo.txid}:${utxo.vout}`));
 };
 
-export const filterUtxosByOutpoints = (
-  utxos: UTXO[],
-  outpoints: Set<string>,
-): UTXO[] => {
-  return utxos.filter((utxo) => {
-    const outpoint = `${utxo.txid}:${utxo.vout}`;
-    return outpoints.has(outpoint);
-  });
-};
-
 export const excludeUtxosByOutpoints = (
   utxos: UTXO[],
   outpoints: Set<string>,
@@ -34,22 +24,13 @@ export const findUserUtxosInTransaction = (
   transaction: Transaction,
   userAddress: string,
 ): UTXO[] => {
-  const userUtxos: UTXO[] = [];
-
-  for (const input of transaction.vin) {
-    const inputAddress = input.prevout.scriptpubkey_address;
-
-    if (inputAddress === userAddress) {
-      userUtxos.push({
-        txid: input.txid,
-        vout: input.vout,
-        value: input.prevout.value,
-        status: transaction.status,
-      });
-    }
-  }
-
-  return userUtxos;
+  return transaction.vin
+    .filter((input) => input.prevout.scriptpubkey_address === userAddress)
+    .map((input) => ({
+      txid: input.txid,
+      vout: input.vout,
+      value: input.prevout.value,
+    }));
 };
 
 export const findLargestUtxo = (utxos: UTXO[]): UTXO => {
@@ -147,23 +128,17 @@ export const filterCleanUtxos = async (
   try {
     const addressUtxos = await ordiscanClient.getAddressUTXOs(address);
 
-    const cleanUtxos: UTXO[] = [];
-
-    for (const utxo of utxos) {
+    return utxos.filter((utxo) => {
       const outpoint = `${utxo.txid}:${utxo.vout}`;
       const ordiscanUtxo = addressUtxos.find((u) => u.outpoint === outpoint);
 
       // If UTXO not found in ordiscan or has no collateral, it's clean
-      if (
+      return (
         !ordiscanUtxo ||
         (ordiscanUtxo.inscriptions.length === 0 &&
           ordiscanUtxo.runes.length === 0)
-      ) {
-        cleanUtxos.push(utxo);
-      }
-    }
-
-    return cleanUtxos;
+      );
+    });
   } catch (error) {
     throw new Error(
       `Failed to validate UTXOs with ordiscan: ${error instanceof Error ? error.message : "Unknown error"}`,
