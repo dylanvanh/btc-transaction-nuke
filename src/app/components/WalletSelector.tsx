@@ -7,8 +7,8 @@ import {
   useLaserEyes,
   WalletIcon,
 } from "@omnisat/lasereyes-react";
-import { CheckCircle, Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CheckCircle, LoaderCircle, Wallet } from "lucide-react";
+import { useState } from "react";
 
 interface WalletSelectorProps {
   onWalletConnected?: () => void;
@@ -19,11 +19,7 @@ export default function WalletSelector({
   onWalletConnected,
   onError,
 }: WalletSelectorProps) {
-  const [isConnecting, setIsConnecting] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
-  const [walletStatusMap, setWalletStatusMap] = useState<
-    Record<string, boolean>
-  >({});
 
   const {
     connect,
@@ -31,10 +27,39 @@ export default function WalletSelector({
     connected,
     address: ordinalsAddress,
     paymentAddress,
+    isConnecting,
+    hasKeplr,
+    hasLeather,
+    hasMagicEden,
+    hasOkx,
+    hasOpNet,
+    hasOrange,
+    hasOyl,
+    hasPhantom,
+    hasSparrow,
+    hasTokeo,
+    hasUnisat,
+    hasWizz,
+    hasXverse,
   } = useLaserEyes();
 
+  const walletStatusMap: Record<string, boolean> = {
+    [SUPPORTED_WALLETS.keplr.name]: hasKeplr,
+    [SUPPORTED_WALLETS.leather.name]: hasLeather,
+    [SUPPORTED_WALLETS["magic-eden"].name]: hasMagicEden,
+    [SUPPORTED_WALLETS.okx.name]: hasOkx,
+    [SUPPORTED_WALLETS.op_net.name]: hasOpNet,
+    [SUPPORTED_WALLETS.orange.name]: hasOrange,
+    [SUPPORTED_WALLETS.oyl.name]: hasOyl,
+    [SUPPORTED_WALLETS.phantom.name]: hasPhantom,
+    [SUPPORTED_WALLETS.sparrow.name]: hasSparrow,
+    [SUPPORTED_WALLETS.tokeo.name]: hasTokeo,
+    [SUPPORTED_WALLETS.unisat.name]: hasUnisat,
+    [SUPPORTED_WALLETS.wizz.name]: hasWizz,
+    [SUPPORTED_WALLETS.xverse.name]: hasXverse,
+  };
+
   const handleConnect = async (walletName: string) => {
-    setIsConnecting(true);
     try {
       await connect(walletName as ProviderType);
       setShowWalletModal(false);
@@ -44,76 +69,8 @@ export default function WalletSelector({
       const errorMessage =
         error instanceof Error ? error.message : "Failed to connect wallet";
       onError?.(errorMessage);
-    } finally {
-      setIsConnecting(false);
     }
   };
-
-  const formatWalletName = (name: string) => {
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  };
-
-  const isWalletInstalled = (provider: string): boolean => {
-    return typeof window !== "undefined" && provider in window;
-  };
-
-  // Check wallet installation status
-  useEffect(() => {
-    const checkWalletAvailability = () => {
-      const statusMap: Record<string, boolean> = {};
-
-      Object.values(SUPPORTED_WALLETS).forEach((wallet) => {
-        let isInstalled = false;
-
-        // Check based on wallet name
-        switch (wallet.name.toLowerCase()) {
-          case SUPPORTED_WALLETS.xverse.name:
-            isInstalled = isWalletInstalled("XverseProviders");
-            break;
-          case SUPPORTED_WALLETS.unisat.name:
-            isInstalled = isWalletInstalled("unisat");
-            break;
-          case SUPPORTED_WALLETS.leather.name:
-            isInstalled =
-              isWalletInstalled("LeatherProvider") ||
-              isWalletInstalled("HiroWalletProvider");
-            break;
-          case SUPPORTED_WALLETS["magic-eden"].name:
-            isInstalled = isWalletInstalled("magicEden");
-            break;
-          case SUPPORTED_WALLETS.okx.name:
-            isInstalled = isWalletInstalled("okxwallet");
-            break;
-          case SUPPORTED_WALLETS.phantom.name:
-            isInstalled = isWalletInstalled("phantom");
-            break;
-          case SUPPORTED_WALLETS.wizz.name:
-            isInstalled = isWalletInstalled("wizz");
-            break;
-          case SUPPORTED_WALLETS.oyl.name:
-            isInstalled = isWalletInstalled("oyl");
-            break;
-          case SUPPORTED_WALLETS.orange.name:
-            isInstalled = isWalletInstalled("orange");
-            break;
-          default:
-            // Generic check for other wallets
-            isInstalled = isWalletInstalled(wallet.name.toLowerCase());
-        }
-
-        statusMap[wallet.name] = isInstalled;
-      });
-
-      setWalletStatusMap(statusMap);
-    };
-
-    checkWalletAvailability();
-
-    // Re-check when the modal opens
-    if (showWalletModal) {
-      checkWalletAvailability();
-    }
-  }, [showWalletModal]);
 
   const handleDisconnect = async () => {
     try {
@@ -125,7 +82,7 @@ export default function WalletSelector({
 
   if (connected) {
     return (
-      <div className="border border-green-400 pixel-border p-3 mb-4">
+      <div className="border border-green-400 p-3 mb-4">
         <div className="flex items-center justify-center space-x-2 mb-3">
           <CheckCircle className="w-3 h-3 text-green-400" />
           <span className="text-xs text-green-400 tracking-wider font-bold">
@@ -183,7 +140,7 @@ export default function WalletSelector({
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 bg-black bg-opacity-50 z-40" />
           <Dialog.Popup className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden">
-            <div className="bg-black border border-white pixel-border p-6 w-full max-w-md mx-auto relative overflow-hidden">
+            <div className="bg-black border border-white p-6 w-full max-w-md mx-auto relative overflow-hidden">
               <div className="absolute inset-0 bg-gray-900 opacity-5 animate-pulse"></div>
               <div className="flex items-center justify-between mb-6 relative z-10">
                 <Dialog.Title className="text-lg font-bold tracking-wider text-white truncate">
@@ -230,33 +187,13 @@ export default function WalletSelector({
                               <WalletIcon walletName={wallet.name} size={24} />
                             </div>
                             <p className="text-white font-bold text-xs tracking-wider truncate">
-                              {formatWalletName(wallet.name).toUpperCase()}
+                              {wallet.name.toUpperCase()}
                             </p>
                           </div>
 
                           <div className="flex items-center gap-2 flex-shrink-0">
                             {isConnecting && isInstalled && (
-                              <div className="text-red-400">
-                                <svg
-                                  className="animate-spin h-4 w-4"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                  />
-                                  <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                  />
-                                </svg>
-                              </div>
+                              <LoaderCircle className="h-4 w-4 animate-spin text-red-400" />
                             )}
                             {isInstalled ? (
                               <span className="inline-flex items-center px-2 py-0.5 border border-green-400 text-xs font-bold bg-black text-green-400 whitespace-nowrap">

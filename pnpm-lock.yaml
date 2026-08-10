@@ -20,27 +20,12 @@ importers:
       '@bitcoinerlab/secp256k1':
         specifier: ^1.2.0
         version: 1.2.0
-      '@omnisat/lasereyes':
-        specifier: 0.0.157
-        version: 0.0.157(@popperjs/core@2.11.8)(@types/node@20.19.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)(vite@7.0.2(@types/node@20.19.4)(jiti@2.4.2)(lightningcss@1.30.1))
-      '@omnisat/lasereyes-core':
-        specifier: ^0.0.79
-        version: 0.0.79(@types/node@20.19.4)(typescript@5.8.3)
       '@omnisat/lasereyes-react':
         specifier: ^0.0.74
         version: 0.0.74(@popperjs/core@2.11.8)(@types/node@20.19.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)(vite@7.0.2(@types/node@20.19.4)(jiti@2.4.2)(lightningcss@1.30.1))
-      '@t3-oss/env-nextjs':
-        specifier: ^0.13.8
-        version: 0.13.8(typescript@5.8.3)(zod@3.25.75)
-      axios:
-        specifier: ^1.16.0
-        version: 1.17.0
       bitcoinjs-lib:
         specifier: 7.0.0-rc.0
         version: 7.0.0-rc.0(typescript@5.8.3)
-      ecpair:
-        specifier: ^3.0.0
-        version: 3.0.0(typescript@5.8.3)
       lucide-react:
         specifier: ^0.525.0
         version: 0.525.0(react@19.1.0)
@@ -53,9 +38,6 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
-      simple-icons:
-        specifier: ^15.7.0
-        version: 15.7.0
       zod:
         specifier: ^3.25.75
         version: 3.25.75
@@ -852,9 +834,6 @@ packages:
       react: '>=17'
       react-dom: '>=17'
 
-  '@omnisat/lasereyes@0.0.157':
-    resolution: {integrity: sha512-pcwGLzFmLwMZVqgJPtQ6qDz6F1s1/zOJ5xYX7KzZBufkIEHrC1ScbHS9IHZV6e9xQl33+lrNQrPdjrmYlMkBWA==}
-
   '@orangecrypto/orange-connect@1.2.4':
     resolution: {integrity: sha512-eiY3naqGPBb1rgiLcbGDuxekv7KkWTeSIpYSXkIWQynar+lsT+VzOUi/IW+Z8B/srmwPOdYv+/A6/jgtUqsrZg==}
 
@@ -1042,40 +1021,6 @@ packages:
 
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
-
-  '@t3-oss/env-core@0.13.8':
-    resolution: {integrity: sha512-L1inmpzLQyYu4+Q1DyrXsGJYCXbtXjC4cICw1uAKv0ppYPQv656lhZPU91Qd1VS6SO/bou1/q5ufVzBGbNsUpw==}
-    peerDependencies:
-      arktype: ^2.1.0
-      typescript: '>=5.0.0'
-      valibot: ^1.0.0-beta.7 || ^1.0.0
-      zod: ^3.24.0 || ^4.0.0-beta.0
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      typescript:
-        optional: true
-      valibot:
-        optional: true
-      zod:
-        optional: true
-
-  '@t3-oss/env-nextjs@0.13.8':
-    resolution: {integrity: sha512-QmTLnsdQJ8BiQad2W2nvV6oUpH4oMZMqnFEjhVpzU0h3sI9hn8zb8crjWJ1Amq453mGZs6A4v4ihIeBFDOrLeQ==}
-    peerDependencies:
-      arktype: ^2.1.0
-      typescript: '>=5.0.0'
-      valibot: ^1.0.0-beta.7 || ^1.0.0
-      zod: ^3.24.0 || ^4.0.0-beta.0
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      typescript:
-        optional: true
-      valibot:
-        optional: true
-      zod:
-        optional: true
 
   '@tailwindcss/node@4.1.11':
     resolution: {integrity: sha512-yzhzuGRmv5QyU9qLNg4GTlYI6STedBWRE7NjxP45CsFYYq9taI0zJXZBMqIC/c8fViNLhmrbpSFS57EoxUmD6Q==}
@@ -1931,10 +1876,6 @@ packages:
   ecpair@2.1.0:
     resolution: {integrity: sha512-cL/mh3MtJutFOvFc27GPZE2pWL3a3k4YvzUWEOvilnfZVlH3Jwgx/7d6tlD7/75tNk8TG2m+7Kgtz0SI1tWcqw==}
     engines: {node: '>=8.0.0'}
-
-  ecpair@3.0.0:
-    resolution: {integrity: sha512-kf4JxjsRQoD4EBzpYjGAcR0t9i/4oAeRPtyCpKvSwyotgkc6oA4E4M0/e+kep7cXe+mgxAvoeh/jdgH9h5+Wxw==}
-    engines: {node: '>=20.0.0'}
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -3305,10 +3246,6 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  simple-icons@15.7.0:
-    resolution: {integrity: sha512-buN9moq1lh6Tujgr2Nc3Vgi4naE0IOKon48G42aLWqSNxjWJlUx+YSqobKcefom4uv1xyAVFcjQOJIhBJvXjGw==}
-    engines: {node: '>=0.12.18'}
-
   sirv@2.0.4:
     resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
     engines: {node: '>= 10'}
@@ -4352,27 +4289,6 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@omnisat/lasereyes@0.0.157(@popperjs/core@2.11.8)(@types/node@20.19.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)(vite@7.0.2(@types/node@20.19.4)(jiti@2.4.2)(lightningcss@1.30.1))':
-    dependencies:
-      '@omnisat/lasereyes-core': 0.0.79(@types/node@20.19.4)(typescript@5.8.3)
-      '@omnisat/lasereyes-react': 0.0.74(@popperjs/core@2.11.8)(@types/node@20.19.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)(vite@7.0.2(@types/node@20.19.4)(jiti@2.4.2)(lightningcss@1.30.1))
-      bip39: 3.1.0
-    transitivePeerDependencies:
-      - '@popperjs/core'
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - bufferutil
-      - debug
-      - encoding
-      - react
-      - react-dom
-      - react-streaming
-      - supports-color
-      - typescript
-      - utf-8-validate
-      - vite
-
   '@orangecrypto/orange-connect@1.2.4(typescript@5.8.3)':
     dependencies:
       jsontokens: 4.0.1
@@ -4568,18 +4484,6 @@ snapshots:
   '@swc/helpers@0.5.15':
     dependencies:
       tslib: 2.8.1
-
-  '@t3-oss/env-core@0.13.8(typescript@5.8.3)(zod@3.25.75)':
-    optionalDependencies:
-      typescript: 5.8.3
-      zod: 3.25.75
-
-  '@t3-oss/env-nextjs@0.13.8(typescript@5.8.3)(zod@3.25.75)':
-    dependencies:
-      '@t3-oss/env-core': 0.13.8(typescript@5.8.3)(zod@3.25.75)
-    optionalDependencies:
-      typescript: 5.8.3
-      zod: 3.25.75
 
   '@tailwindcss/node@4.1.11':
     dependencies:
@@ -5576,14 +5480,6 @@ snapshots:
       randombytes: 2.1.0
       typeforce: 1.18.0
       wif: 2.0.6
-
-  ecpair@3.0.0(typescript@5.8.3):
-    dependencies:
-      uint8array-tools: 0.0.8
-      valibot: 0.37.0(typescript@5.8.3)
-      wif: 5.0.0
-    transitivePeerDependencies:
-      - typescript
 
   ee-first@1.1.1: {}
 
@@ -7311,8 +7207,6 @@ snapshots:
       side-channel-weakmap: 1.0.2
 
   signal-exit@4.1.0: {}
-
-  simple-icons@15.7.0: {}
 
   sirv@2.0.4:
     dependencies:

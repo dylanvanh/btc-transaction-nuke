@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { LaserEyesProvider } from '@omnisat/lasereyes-react';
-import { MAINNET } from '@omnisat/lasereyes-core';
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { LaserEyesProvider, MAINNET } from "@omnisat/lasereyes-react";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -26,9 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistMono.variable} antialiased`}>
         <LaserEyesProvider config={{ network: MAINNET }}>
           <div className="root" style={{ isolation: 'isolate' }}>
             {children}

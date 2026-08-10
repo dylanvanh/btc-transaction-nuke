@@ -16,16 +16,7 @@ const addUtxoInput = async (
   address: string,
   publicKey: string,
 ): Promise<void> => {
-  const inputData: {
-    hash: string;
-    index: number;
-    witnessUtxo: {
-      script: Buffer;
-      value: bigint;
-    };
-    redeemScript?: Buffer;
-    tapInternalKey?: Buffer;
-  } = {
+  const inputData: Parameters<bitcoin.Psbt["addInput"]>[0] = {
     hash: utxo.txid,
     index: utxo.vout,
     witnessUtxo: {
@@ -72,7 +63,7 @@ export const buildConsolidatedTransaction = async (
   paymentAddress: string,
   feeRate: number,
   paymentPublicKey: string,
-): Promise<{ psbt: string; hex: string; fee: number }> => {
+): Promise<{ psbt: string; fee: number }> => {
   const psbt = new bitcoin.Psbt();
 
   for (const utxo of utxosToSpend) {
@@ -103,7 +94,6 @@ export const buildConsolidatedTransaction = async (
 
   return {
     psbt: psbt.toBase64(),
-    hex: psbt.toHex(),
     fee: estimatedFee,
   };
 };
@@ -116,7 +106,7 @@ export const buildOrdinalsTransactionWithSeparateOutputs = async (
   feeRate: number,
   paymentPublicKey: string,
   ordinalsPublicKey: string,
-): Promise<{ psbt: string; hex: string; fee: number }> => {
+): Promise<{ psbt: string; fee: number }> => {
   const psbt = new bitcoin.Psbt();
 
   // Add ordinals UTXO as input (send back unchanged)
@@ -150,7 +140,6 @@ export const buildOrdinalsTransactionWithSeparateOutputs = async (
 
   return {
     psbt: psbt.toBase64(),
-    hex: psbt.toHex(),
     fee: estimatedFee,
   };
 };
@@ -163,7 +152,7 @@ export const buildOrdinalsTransactionWithMultiplePaymentInputs = async (
   feeRate: number,
   paymentPublicKey: string,
   ordinalsPublicKey: string,
-): Promise<{ psbt: string; hex: string; fee: number }> => {
+): Promise<{ psbt: string; fee: number }> => {
   const psbt = new bitcoin.Psbt();
 
   // Add ordinals UTXO as input (send back unchanged)
@@ -207,7 +196,6 @@ export const buildOrdinalsTransactionWithMultiplePaymentInputs = async (
 
   return {
     psbt: psbt.toBase64(),
-    hex: psbt.toHex(),
     fee: estimatedFee,
   };
 };

@@ -33,7 +33,6 @@ const createCancellationStrategies = (
 ): CancellationStrategy<CancelTxResult>[] => {
   const paymentUtxosOnlyStrategy = () =>
     processPaymentUtxos(
-      allUserUtxos,
       originalTx,
       paymentAddress,
       newFeeRate,

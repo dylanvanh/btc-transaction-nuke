@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { mempoolClient } from "@/app/lib/clients/mempool-client";
 import { bitcoin } from "@/app/lib/core/config/config";
@@ -7,10 +6,9 @@ const BroadcastTxSchema = z.object({
   signedPsbtHex: z.string().min(1, "Signed PSBT hex is required"),
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { signedPsbtHex } = BroadcastTxSchema.parse(body);
+    const { signedPsbtHex } = BroadcastTxSchema.parse(await request.json());
 
     const psbt = bitcoin.Psbt.fromHex(signedPsbtHex);
 
@@ -19,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     const txId = await mempoolClient.broadcastTransaction(rawTxHex);
 
-    return NextResponse.json({
+    return Response.json({
       success: true,
       txId: txId,
       message: "Transaction broadcast successfully",
@@ -27,7 +25,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
 
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
+      return Response.json(
         {
           error: "Invalid request body",
           details: error.errors,
@@ -37,7 +35,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(
+    return Response.json(
       {
         error:
           error instanceof Error
@@ -49,4 +47,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

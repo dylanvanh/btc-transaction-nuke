@@ -7,7 +7,6 @@ import {
 } from "../../errors/errors";
 import {
   createOutpointSet,
-  filterUtxosByOutpoints,
   excludeUtxosByOutpoints,
   findUserUtxosInTransaction,
   findBestOrdinalsUtxo,
@@ -25,12 +24,7 @@ import {
   TRANSACTION_OVERHEAD,
   DUST_THRESHOLD,
 } from "../../config/constants";
-
-export type CancelTxResult = {
-  unsignedPsbt: string;
-  inputSigningMap: Array<{ index: number; address: string }>;
-  totalFee: number;
-};
+import type { CancelTxResult } from "../cancel-tx";
 
 export const processOrdinalsUtxos = async (
   allUserUtxos: UTXO[],
@@ -41,12 +35,10 @@ export const processOrdinalsUtxos = async (
   paymentPublicKey: string,
   ordinalsPublicKey: string,
 ): Promise<CancelTxResult> => {
-  const userOrdinalsUtxosInTx = findUserUtxosInTransaction(
+  const ordinalsUtxos = findUserUtxosInTransaction(
     originalTx,
     ordinalsAddress,
   );
-  const ordinalsOutpoints = createOutpointSet(userOrdinalsUtxosInTx);
-  const ordinalsUtxos = filterUtxosByOutpoints(allUserUtxos, ordinalsOutpoints);
 
   if (ordinalsUtxos.length === 0) {
     throw new ValidationError("No ordinals UTXOs found in transaction");

@@ -3,8 +3,13 @@
 import { Form } from "@base-ui-components/react/form";
 import { Dialog } from "@base-ui-components/react/dialog";
 import { useLaserEyes } from "@omnisat/lasereyes-react";
-import { AlertCircle, AlertTriangle, CheckCircle, Skull } from "lucide-react";
-import { siGithub } from "simple-icons";
+import {
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle,
+  Github,
+  Skull,
+} from "lucide-react";
 import { useState } from "react";
 import WalletSelector from "./components/WalletSelector";
 
@@ -59,12 +64,7 @@ export default function Home() {
 
       if (response.ok && result.success) {
         // Sign the PSBT with proper address mapping
-        const inputsToSign =
-          (
-            result as {
-              inputSigningMap?: Array<{ index: number; address: string }>;
-            }
-          ).inputSigningMap || [];
+        const inputsToSign = result.inputSigningMap ?? [];
 
         let signedPsbt;
         try {
@@ -156,7 +156,7 @@ export default function Home() {
           </div>
 
           {/* Main Interface */}
-          <div className="bg-black border border-red-400 pixel-border p-6 mb-6 relative">
+          <div className="bg-black border border-red-400 p-6 mb-6 relative">
             {/* Glitch effect overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-900 to-transparent opacity-10 animate-pulse"></div>
 
@@ -212,7 +212,7 @@ export default function Home() {
 
           {/* Status Messages */}
           {status === "success" && (
-            <div className="bg-black border border-green-400 pixel-border p-4 mb-4">
+            <div className="bg-black border border-green-400 p-4 mb-4">
               <div className="flex items-center justify-center space-x-2 mb-3">
                 <CheckCircle className="w-4 h-4 text-green-400" />
                 <p className="text-green-400 font-bold text-xs tracking-wider">
@@ -239,7 +239,7 @@ export default function Home() {
           )}
 
           {status === "error" && error && (
-            <div className="bg-black border border-red-400 pixel-border p-4 mb-4">
+            <div className="bg-black border border-red-400 p-4 mb-4">
               <div className="flex items-center justify-center space-x-2 mb-3">
                 <AlertCircle className="w-4 h-4 text-red-400" />
                 <p className="text-red-400 font-bold text-xs tracking-wider">
@@ -276,14 +276,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center justify-center space-x-2 text-white hover:text-red-400 transition-all tracking-wider text-xs border border-white hover:border-red-400 px-3 py-2 pixel-button bg-black hover:bg-black hover:text-red-400"
             >
-              <svg
-                role="img"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-3 h-3 fill-current"
-              >
-                <path d={siGithub.path} />
-              </svg>
+              <Github className="w-3 h-3" />
               <span className="font-bold">GITHUB</span>
             </a>
             <button
@@ -302,7 +295,7 @@ export default function Home() {
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 bg-black bg-opacity-50 z-40" />
           <Dialog.Popup className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-black border border-yellow-400 pixel-border p-6 max-w-md w-full relative">
+            <div className="bg-black border border-yellow-400 p-6 max-w-md w-full relative">
               <div className="absolute inset-0 bg-yellow-900 opacity-5 animate-pulse"></div>
               <div className="text-center mb-4 relative z-10">
                 <div className="flex items-center justify-center mb-3">
